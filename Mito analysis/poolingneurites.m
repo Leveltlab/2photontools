@@ -102,7 +102,7 @@ for i = 1:length(allgroups(:))
                             Set{k} = [Set{k} neurite];
                             Lset{k} = Lset{k} + Ln;
                             bAdd = 1;
-                            continue
+                            break
                         end
                     end
                     if ~bAdd %no => make new
@@ -119,12 +119,14 @@ for i = 1:length(allgroups(:))
             end
         end
         if Cnt > 1
-            if  Lset{Cnt} < pool_short_neurites
-                Set{Cnt-1} = [Set{Cnt-1} Set{Cnt}];
-                Set = Set(1:Cnt-1);
-                Lset{Cnt-1} = Lset{Cnt-1} + Lset{Cnt};
-                Lset =  Lset(1:Cnt-1);
-            end
+            lngval = [Lset{:}];
+            [~, idx] = sort(lngval);
+            if  lngval(idx(1)) < pool_short_neurites
+                    Set{idx(2)} = [Set{idx(2)} Set{idx(1)}];
+                    Lset{idx(2)} = Lset{idx(2)} + Lset{idx(1)};
+                    Set = Set(idx(2:end));
+                    Lset = Lset(idx(2:end));                      
+           end
         end
         allgroups(i).pool{j}.Set = Set;
         allgroups(i).pool{j}.Lset = Lset;
