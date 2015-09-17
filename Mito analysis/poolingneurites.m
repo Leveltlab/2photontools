@@ -1,7 +1,7 @@
 
 global pooled 
 %pool neurites
-experiment 11.12_ls_axons
+% experiment 11.12_rr_101
 
 %load graphdb
 [db,filename] = load_graphdb;
@@ -11,7 +11,7 @@ groupdb=load_groupdb;
 
 [testdb.db, testdb.filename] = load_testdb('tp');
 
-strgroups = {'11.12 no lesion 3 hours early', '11.12 lesion 3 hours early'};
+strgroups = {'11.12 no lesion','11.12 lesion'};
 n_groups = length(strgroups);
 groups = cell(n_groups,1);
     for g=1:n_groups
@@ -29,6 +29,7 @@ pool_short_neurites = 5;
 
 allgroups = struct([]);
 for g=1:n_groups
+    disp(['Group: ', num2str(g), ' ..............'])
     strmice = strsplit(groups{g}, '|');
     strmice = strrep(strmice, 'mouse=', '');
     allgroups(g).groups = strmice;
@@ -47,7 +48,7 @@ for g=1:n_groups
                 strday = dbrec.slice;
                 if ~strcmp(timepoint, strday)
                     %reject this record
-                    disp(['Record : ' num2str(i_record) ' not valid, timepoint is ' strday ])
+                    disp(['Record : ' num2str(i_record) ' non valid timepoint: ' strday ])
                     continue
                 else
                     disp(['Record : ' num2str(i_record) ' valid' ])
@@ -66,13 +67,16 @@ for g=1:n_groups
                     err = 1;
                     disp('Failed to evaluate criteria')
                 end
-                if ~err && evaluated_criteria %bouton or t_bouton
+                if ~isempty(evaluated_criteria) && ~err && evaluated_criteria %bouton or t_bouton
                     linked2neurite = [linked2neurite measures.linked2neurite];
                     
                 end
             end
             Cnt = Cnt + 1;
-            allgroups(g).linked2neurite{Cnt} = linked2neurite;
+            allgroups(g).linked2neurite{Cnt,1} = linked2neurite;
+            allgroups(g).linked2neurite{Cnt,2} = dbrec.mouse;
+            allgroups(g).linked2neurite{Cnt,3} = dbrec.stack;
+            disp(['Cnt = ', num2str(Cnt)]) 
         end %records for each mouse
     end % mouse
 end %group
@@ -81,7 +85,7 @@ end %group
 
 for i = 1:length(allgroups(:))
     for j = 1:length(allgroups(i).linked2neurite) 
-        nids = allgroups(i).linked2neurite{j}; 
+        nids = allgroups(i).linked2neurite{j,1}; 
         uniqneurites = unique(nids);
         Cnt = 0;
         Set = [];

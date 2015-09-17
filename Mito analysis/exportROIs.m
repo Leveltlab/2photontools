@@ -1,7 +1,7 @@
 
 global pooled 
-%pool neurites
-experiment 11.12_ls_axons
+% pool neurites
+% experiment 11.12_ls_axons
 
 %load graphdb
 [db,filename] = load_graphdb;
@@ -11,7 +11,8 @@ groupdb=load_groupdb;
 
 [testdb.db, testdb.filename] = load_testdb('tp');
 
-strgroups = {'11.12 no lesion 3 hours early', '11.12 lesion 3 hours early'};
+strgroups = {'11.12 no lesion', '11.12 lesion'}; 
+% RR: change experiment groups here as per group_db
 n_groups = length(strgroups);
 groups = cell(n_groups,1);
     for g=1:n_groups
@@ -19,7 +20,7 @@ groups = cell(n_groups,1);
         groups(g)= {groupdb(ind_g).filter};
     end
 
-Poolfor = '(measures.bouton==1)'; % change for mito or bouton
+Poolfor = '(measures.mito==1)'; % RR: change for mito or bouton
 time = '0';
 %pool_short_neurites = 5;
 
@@ -61,14 +62,15 @@ for g=1:n_groups
                 end
                 if ~err && evaluated_criteria %bouton or t_bouton
                     Roicnt = Roicnt + 1;
-                    allgroups(g).recordlist{Roicnt, 1} = strmice{i_mouse};
-                    allgroups(g).recordlist{Roicnt, 2} = stack;
-                    allgroups(g).recordlist{Roicnt, 3} = strday;
-                    allgroups(g).recordlist{Roicnt, 4} = measures.index;
-                    allgroups(g).recordlist{Roicnt, 5} = measures.linked2neurite;
-                    allgroups(g).recordlist{Roicnt, 6} = measures.present;
-                    allgroups(g).recordlist{Roicnt, 7} = measures.gained;
-                    allgroups(g).recordlist{Roicnt, 8} = measures.lost;
+                     allgroups(g).recordlist{Roicnt, 1} = strmice{i_mouse};
+                     allgroups(g).recordlist{Roicnt, 2} = stack;
+                     allgroups(g).recordlist{Roicnt, 3} = strday;
+                     allgroups(g).recordlist{Roicnt, 4} = measures.index;
+%                      allgroups(g).recordlist{Roicnt, 5} = measures.linked2neurite;
+                     allgroups(g).recordlist{Roicnt, 6} = measures.present;
+%                     allgroups(g).recordlist{Roicnt, 7} = measures.gained;
+%                     allgroups(g).recordlist{Roicnt, 8} = measures.lost;
+                     allgroups(g).recordlist{Roicnt, 9} = measures.intensity_mean_ch1;
                 end
             end
             
