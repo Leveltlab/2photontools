@@ -40,6 +40,7 @@ for g=1:n_groups
             for i_stack = stack_specific_entries
                 stackrec = [stackrec mouserec(i_stack)];
                 data=stackrec.measures;
+                bouton_rois = struct([]);
                 for i_data=1:length(data)
                     measures = data(i_data);
                     err = 0;
@@ -48,10 +49,9 @@ for g=1:n_groups
                     catch errmsg
                         err = 1;
                         disp('Failed to evaluate criteria')
-                    end
-                    bouton_rois = struct([]);
+                    end                    
                     if ~isempty(evaluated_criteria) && ~err && evaluated_criteria
-                        bouton_rois=[bouton_rois measures.index];
+                        bouton_rois={bouton_rois measures.index};
                     end
                 end
             end
